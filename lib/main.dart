@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_suitmedia_mobile_assessment/cubits/list_user_cubit.dart';
 import 'package:flutter_suitmedia_mobile_assessment/pages/first_screen.dart';
-import 'package:flutter_suitmedia_mobile_assessment/pages/second_screen.dart';
-import 'package:flutter_suitmedia_mobile_assessment/pages/third_screen.dart';
 import 'package:flutter_suitmedia_mobile_assessment/theme/theme.dart';
 
 void main() {
@@ -21,11 +19,7 @@ class MyApp extends StatelessWidget {
         title: 'Suitmedia Assessment',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
-        routes: {
-          FirstScreen.nameRoute: (context) => const FirstScreen(),
-          SecondPage.nameRoute: (context) => const SecondPage(),
-          ThirdScreen.nameRoute: (context) => const ThirdScreen(),
-        },
+        home: const FirstScreen(),
       ),
     );
   }

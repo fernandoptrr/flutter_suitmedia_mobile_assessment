@@ -6,8 +6,6 @@ import 'package:flutter_suitmedia_mobile_assessment/pages/second_screen.dart';
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
 
-  static const nameRoute = '/';
-
   @override
   State<FirstScreen> createState() => _FirstScreenState();
 }
@@ -25,10 +23,6 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 
   bool _isPanlindrome(String word) {
-    // for (int i = 0; i < word.length ~/ 2; i++) {
-    //   if (word[i] != word[word.length - i - 1]) return false;
-    // }
-    // return true;
     for (int i = word.length - 1, j = 0; i >= word.length ~/ 2; i--, j++) {
       if (word[i] != word[j]) return false;
     }
@@ -38,7 +32,7 @@ class _FirstScreenState extends State<FirstScreen> {
   Future<void> _showPalindromeResultDialog(bool isPalindrome) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(isPalindrome ? 'isPalindrome' : 'not palindrome'),
@@ -107,8 +101,13 @@ class _FirstScreenState extends State<FirstScreen> {
                     onTapped: () {
                       FocusManager.instance.primaryFocus?.unfocus();
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pushNamed(context, SecondPage.nameRoute,
-                            arguments: _nameController.text);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SecondPage(
+                                    headerName: _nameController.text,
+                                  )),
+                        );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

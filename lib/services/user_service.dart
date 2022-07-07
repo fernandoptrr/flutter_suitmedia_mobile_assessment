@@ -5,9 +5,8 @@ import 'package:flutter_suitmedia_mobile_assessment/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class UserService {
-  Future<ApiReturnValue<List<User>>> getListUser(
-      {required int page, required int perPage}) async {
-    final url = "https://reqres.in/api/users?page=$page&per_page=$perPage";
+  Future<ApiReturnValue<List<User>>> getListUser({required int page}) async {
+    final url = "https://reqres.in/api/users?page=$page&per_page=6";
 
     try {
       final response = await http.Client().get(

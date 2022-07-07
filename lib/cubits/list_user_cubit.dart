@@ -9,11 +9,11 @@ part 'list_user_state.dart';
 class ListUserCubit extends Cubit<ListUserState> {
   ListUserCubit() : super(ListUserInitial());
 
-  Future<void> getListUser({required int page, required int perPage}) async {
-    emit(ListUserInitial());
+  Future<void> getListUser({required int page}) async {
+    if (page == 1) emit(ListUserInitial());
 
     final ApiReturnValue<List<User>> result =
-        await UserService().getListUser(page: 1, perPage: 6);
+        await UserService().getListUser(page: 1);
 
     if (result.value != null) {
       emit(ListUserLoaded(listUser: result.value!));

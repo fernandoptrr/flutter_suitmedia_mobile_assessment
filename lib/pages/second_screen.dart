@@ -5,16 +5,14 @@ import 'package:flutter_suitmedia_mobile_assessment/pages/third_screen.dart';
 import 'package:flutter_suitmedia_mobile_assessment/theme/theme.dart';
 
 class SecondPage extends StatelessWidget {
-  const SecondPage({Key? key, this.userName}) : super(key: key);
+  const SecondPage({Key? key, required this.headerName, this.userName})
+      : super(key: key);
 
+  final String headerName;
   final String? userName;
-  static const nameRoute = '/second';
 
   @override
   Widget build(BuildContext context) {
-    final String headerName =
-        ModalRoute.of(context)!.settings.arguments as String;
-
     return Scaffold(
       appBar: CustomAppBar(title: "Second Page"),
       body: SafeArea(
@@ -37,7 +35,14 @@ class SecondPage extends StatelessWidget {
               CustomButton(
                   hintText: "Choose a User",
                   onTapped: () {
-                    Navigator.pushNamed(context, ThirdScreen.nameRoute);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ThirdScreen(
+                          headerName: headerName,
+                        ),
+                      ),
+                    );
                   })
             ],
           ),

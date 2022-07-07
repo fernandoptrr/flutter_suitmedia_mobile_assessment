@@ -9,22 +9,53 @@ import 'package:flutter_suitmedia_mobile_assessment/pages/second_screen.dart';
 import 'package:flutter_suitmedia_mobile_assessment/theme/colors.dart';
 import 'package:flutter_suitmedia_mobile_assessment/theme/theme.dart';
 
-class ThirdScreen extends StatelessWidget {
-  const ThirdScreen({Key? key}) : super(key: key);
+class ThirdScreen extends StatefulWidget {
+  const ThirdScreen({Key? key, required this.headerName}) : super(key: key);
 
-  static const nameRoute = '/third';
+  final String headerName;
+
+  @override
+  State<ThirdScreen> createState() => _ThirdScreenState();
+}
+
+class _ThirdScreenState extends State<ThirdScreen> {
+  int page = 1;
+  List<User> users = [];
+
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ListUserCubit>().getListUser(page: page);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        page++;
+        debugPrint("Page: $page");
+        context.read<ListUserCubit>().getListUser(page: page);
+        setState(() {
+          users;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    context.read<ListUserCubit>().getListUser(page: 1, perPage: 6);
     return Scaffold(
       appBar: CustomAppBar(title: "Third Page"),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            await context
-                .read<ListUserCubit>()
-                .getListUser(page: 1, perPage: 6);
+            users.clear();
+            await context.read<ListUserCubit>().getListUser(page: 1);
           },
           child: BlocBuilder<ListUserCubit, ListUserState>(
             builder: (context, state) {
@@ -51,29 +82,42 @@ class ThirdScreen extends StatelessWidget {
                   },
                 );
               } else if (state is ListUserLoaded) {
-                final List<User> users = state.listUser;
+                users.addAll(state.listUser);
                 return ListView.separated(
+                  controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(
                       parent: BouncingScrollPhysics()),
                   itemCount: users.length,
                   padding:
                       const EdgeInsets.symmetric(vertical: 32, horizontal: 26),
                   itemBuilder: (context, index) {
-                    final user = users[index];
-                    return UserItemCard(
-                      title: "${user.firstName ?? ""} ${user.lastName ?? ""}",
-                      subtitle: user.email ?? "-",
-                      imagePath: user.avatar ?? "-",
-                      onTapped: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SecondPage(
-                                userName: "${user.firstName} ${user.lastName}"),
-                          ),
-                        );
-                      },
-                    );
+                    if (index < users.length) {
+                      final user = users[index];
+
+                      return UserItemCard(
+                        title: "${user.firstName ?? ""} ${user.lastName ?? ""}",
+                        subtitle: user.email ?? "-",
+                        imagePath: user.avatar ?? "-",
+                        onTapped: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SecondPage(
+                                      headerName: widget.headerName,
+                                      userName:
+                                          "${user.firstName} ${user.lastName}",
+                                    )),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                   },
                   separatorBuilder: (context, index) {
                     return const Divider(height: 0.5, color: AppColor.ink);
